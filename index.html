@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#101628" />
+  <title>Credit · Pruebas del motor v0.1</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0a1020;--panel:#151d32;--panel2:#1e2940;--stroke:#303b53;--text:#f2f1fa;--muted:#abb5ce;--purple:#b6a0fb;--green:#69cda7;--red:#fc8b93}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body{padding:26px 16px max(36px,env(safe-area-inset-bottom));background:radial-gradient(ellipse 95% 40% at 52% -15%,#41358a50,transparent 72%),var(--bg)}
+    main{max-width:740px;margin:0 auto}header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:28px}.logo{font-weight:800;letter-spacing:-.07em;font-size:27px}.sublogo{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}h1{font-size:clamp(24px,5vw,38px);line-height:1.08;letter-spacing:-.045em;margin:0 0 12px}p{line-height:1.55;color:var(--muted);margin:0}.tag{background:#282349;color:#c5b5ff;border:1px solid #443a70;border-radius:999px;padding:7px 11px;font-size:11px;white-space:nowrap}
+    .hero{padding:25px;background:linear-gradient(145deg,#22234f 0%,#26396a 55%,#173d52 100%);border:1px solid #414b7a;border-radius:24px;margin:24px 0;box-shadow:0 18px 50px #0005}.hero-title{font-size:13px;color:#d2d6fa}.score{display:flex;align-items:flex-end;gap:15px;margin:13px 0}.big{font-weight:800;font-size:clamp(44px,10vw,74px);line-height:1;letter-spacing:-.06em;font-variant-numeric:tabular-nums}.status{font-size:13px;color:#c8f6df;margin-bottom:9px}.meter{height:9px;background:#151c36;border-radius:999px;overflow:hidden;margin:16px 0 12px}.meter>div{height:100%;background:#65d0a2;width:0;border-radius:999px;transition:width .2s ease}.hint{font-size:12px;color:#c2c7e5}
+    .actions{display:flex;gap:9px;margin-bottom:19px}button{font:inherit;cursor:pointer;background:#b8a1ff;color:#161329;border:0;border-radius:13px;padding:12px 16px;font-weight:700;min-height:44px}button.secondary{background:#232e47;color:#e4dfff;border:1px solid #414d68}.notice{padding:15px;border:1px solid #3c465f;border-radius:16px;color:#b9c6df;font-size:13px;line-height:1.6;background:#131b2c;margin-bottom:22px}.notice strong{color:#e8e4fc}
+    h2{font-size:18px;margin:22px 0 11px;letter-spacing:-.025em}.results{border:1px solid var(--stroke);border-radius:18px;overflow:hidden;background:var(--panel)}.result{display:flex;gap:13px;align-items:flex-start;padding:13px 16px;border-top:1px solid #2a3550}.result:first-child{border:0}.mark{border-radius:50%;height:24px;width:24px;flex:none;background:#245746;color:#b5fbe0;display:grid;place-items:center;font-size:14px;font-weight:800}.mark.fail{background:#692837;color:#ffc0c4}.rname{font-size:13px;line-height:1.45;font-weight:600}.reason{font-size:12px;color:#ffa4b0;margin-top:3px}.foot{color:#929fb9;font-size:11px;margin-top:18px;line-height:1.6}.hidden{display:none!important}@media(max-width:460px){.hero{padding:20px}.result{padding:12px}.actions{flex-wrap:wrap}}
+  </style>
+</head>
+<body>
+<main>
+  <header><div><div class="logo">Credit<span style="color:#b29cfb">.</span></div><div class="sublogo">Laboratorio del motor financiero</div></div><div class="tag">Versión de pruebas 0.1</div></header>
+  <h1>Primero, precisión.<br>Después, diseño.</h1>
+  <p>Esta página ejecuta pruebas reales sobre el núcleo financiero de Credit. No utiliza cuentas, datos personales ni conexión a internet.</p>
+  <section class="hero" aria-live="polite"><div class="hero-title">Resultado de pruebas automáticas</div><div class="score"><div class="big" id="count">—</div><div class="status" id="state">Comprobando…</div></div><div class="meter" aria-hidden="true"><div id="meter"></div></div><div class="hint" id="summary">Registro, tarjetas, MSI, programación y proyección</div></section>
+  <div class="actions"><button id="rerun" type="button">Ejecutar pruebas</button><button class="secondary" id="failonly" type="button" aria-pressed="false">Mostrar solo fallos</button></div>
+  <div class="notice"><strong>Importante:</strong> superar estas pruebas verifica únicamente los casos programados aquí. Todavía <strong>no demuestra</strong> que Supabase, la sincronización offline real, la seguridad multiusuario ni el algoritmo definitivo de recomendaciones estén terminados.</div>
+  <h2>Pruebas realizadas</h2>
+  <div id="results" class="results" aria-label="Resultados individuales de las pruebas"></div>
+  <p class="foot">Credit 2.0 · Núcleo financiero inicial. Importes internos en centavos; fechas locales YYYY-MM-DD. Las estimaciones de vencimiento deben conciliarse con el estado de cuenta bancario real.</p>
+</main>
+<script src="./engine.js"></script><script src="./tests.js"></script>
+<script>
+  const list=document.querySelector('#results'),failOnly=document.querySelector('#failonly');let results=[];
+  function render(){
+    const passed=results.filter(x=>x.passed).length;
+    document.querySelector('#count').textContent=passed+' / '+results.length;
+    document.querySelector('#state').textContent=passed===results.length?'Todas correctas':'Hay pruebas pendientes';
+    document.querySelector('#state').style.color=passed===results.length?'#c8f6df':'#ffc5cc';
+    document.querySelector('#meter').style.width=(passed/results.length*100)+'%';
+    document.querySelector('#meter').style.background=passed===results.length?'#65d0a2':'#e38b79';
+    document.querySelector('#summary').textContent=passed===results.length?'Sin errores en los escenarios automatizados.':'Revisar los fallos antes de continuar.';
+    list.textContent='';
+    let visible=0;
+    for(const r of results){if(failOnly.getAttribute('aria-pressed')==='true'&&r.passed)continue;visible++;
+      const row=document.createElement('div');row.className='result';
+      const mark=document.createElement('div');mark.className='mark'+(r.passed?'':' fail');mark.textContent=r.passed?'✓':'!';
+      const info=document.createElement('div');const label=document.createElement('div');label.className='rname';label.textContent=r.name;info.appendChild(label);
+      if(r.error){const reason=document.createElement('div');reason.className='reason';reason.textContent=r.error;info.appendChild(reason);}
+      row.append(mark,info);list.appendChild(row);
+    }
+    if(!visible){const empty=document.createElement('div');empty.className='result';empty.textContent='No se detectaron fallos.';list.appendChild(empty);}
+  }
+  function run(){results=window.CreditTests.runTests();render();}
+  document.querySelector('#rerun').addEventListener('click',run);
+  failOnly.addEventListener('click',()=>{failOnly.setAttribute('aria-pressed',String(failOnly.getAttribute('aria-pressed')!=='true'));render();});
+  run();
+</script>
+</body>
+</html>
